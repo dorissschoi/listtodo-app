@@ -1,0 +1,19 @@
+field = (name) ->
+	if name.charAt(0) == '-'
+		return name.substring(1)
+	return name
+	
+order = (name) ->
+	if name.charAt(0) == '-'
+		return -1
+	return 1
+	
+order_by = (name) ->
+	ret = {}
+	ret[field(name)] = order(name)
+	return ret
+		
+module.exports =
+	field:		field
+	order:		order
+	order_by:	order_by

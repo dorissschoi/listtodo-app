@@ -1,0 +1,50 @@
+<% 
+Model = @Model
+model = Model.toLowerCase()
+%>
+model = require '../../model.coffee'
+controller = require '../controller/<%= model %>.coffee'
+vent = require '../../vent.coffee'
+_ = require 'underscore'
+Backbone = require 'backbone'
+Marionette = require 'backbone.marionette'
+
+class Router extends Backbone.Router
+	routes:
+		'<%= model %>/list':		'list'
+		'<%= model %>/create':		'create'
+		'<%= model %>/read/:id':	'read'
+		'<%= model %>/update/:id':	'update'
+		
+	constructor: (opts = {}) ->
+		@collection = new model.<%= Model %>s()
+		@listView = new controller.<%= Model %>SearchView {el: opts.el, collection: @collection, router: @}
+		@createView = new controller.<%= Model %>CreateView {el: opts.el, router: @}
+		@readView = new controller.<%= Model %>ReadView {el: opts.el, router: @}
+		@updateView = new controller.<%= Model %>UpdateView {el: opts.el, router: @}
+	
+		vent.on '<%= model %>:selected', (<%= model %>) =>
+			@read <%= model %>.id
+			
+		super(opts)
+			
+	list: ->
+		@listView.collection.getFirstPage()
+		@listView.render()
+			
+	create: ->
+		@createView.model = new model.<%= Model %>({}, collection: @collection)
+		@createView.render()
+		
+	read: (id) ->
+		@readView.model = new model.<%= Model %> {_id: id}, {collection: new model.<%= Model %>s()}
+		@readView.model.fetch success: =>
+			@readView.render()
+		
+	update: (id) ->
+		@updateView.model = new model.<%= Model %> {_id: id}, {collection: new model.<%= Model %>s()}
+		@updateView.model.fetch success: =>
+			@updateView.render()
+		
+module.exports =
+	Router:		Router
