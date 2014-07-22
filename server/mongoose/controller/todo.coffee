@@ -25,6 +25,14 @@ class Todo
 				return ret
 			cond = $or: fields 
 		
+		
+		if req.query.dtStart and req.query.dtEnd
+			date1 = new Date(parseInt(req.query.dtStart))
+			date2 = new Date(parseInt(req.query.dtEnd))
+			p1 = new lib.Period(date1, date2)
+			cond = _.extend cond, p1.intersect("dateStart", "dateEnd")
+						
+				
 		order_by = lib.order_by model.Todo.ordering()
 		if req.query.order_by and lib.field(req.query.order_by) in model.Todo.ordering_fields() 
 			order_by = lib.order_by req.query.order_by
@@ -32,7 +40,7 @@ class Todo
 		model.Todo.find(cond, null, opts).populate('createdBy updatedBy').sort(order_by).exec (err, todos) ->
 			if err
 				return error res, err
-			model.Todo.count {}, (err, count) ->
+			model.Todo.count cond, (err, count) ->
 				if err
 					return error res, err
 				res.json [{count: count}, todos]
