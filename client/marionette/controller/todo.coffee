@@ -317,39 +317,31 @@ class TodoHourView extends View
 		@collection.each (item, key, list) ->
 			liNodes += _.template element, item			
 		return _.template container, {collection: @collection, liNodes: liNodes}
-
-	tagName: "tr"
-			
+		
 	template: (data) =>
-		tmpl = """
-			<td class="hourViewTime"></td>
-			<td class="hourViewTask"></td>
-		"""	
-		starttime = @model
-		endtime = starttime
-		endtime = endtime.setHours(endtime.getHours() + 1)
-		_.template tmpl, data
-	
-	constructor:
+		_.template @hourTag(), result: @resultTag()	
+
 	
 	collectionsEvents:
-		'change':	'refresh'
+		'change':	'render'
+			
 		
-	refresh: ->
+	onRender: ->
 		@$el.find('div.hour').html @resultTag()
 		
 	onBeforeRender: ->
 		today = new Date()
 		t = today.toLocaleDateString()
 		startDT = new Date(t).getTime()
-		endDT = startDT + 86340000
+		endDt = startDT + 86340000
 		
 		@collection.fetch 
 			data: 
 				dtStart: startDT
-				dtEnd: endDT
+				dtEnd: endDt
 			reset:	true		
 	
+		
 						
 module.exports =	
 	TodoListView: 	TodoListView
