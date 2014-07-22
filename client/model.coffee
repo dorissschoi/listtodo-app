@@ -2,6 +2,7 @@ env = require './env.coffee'
 Backbone = require 'backbone'
 Model = Backbone.Model
 PageableCollection = require 'backbone-pageable'
+Dateutil = require 'dateutil'
 
 class User extends Model
 	urlRoot:	"#{env.path}/api/user"
@@ -45,8 +46,8 @@ class Todo extends Backbone.Model
 		
 	schema:
 		task:			{ type: 'Text', title: 'Task' }
-		dateStart:		{ type: 'Date', title: 'Start date' }
-		dateEnd:		{ type: 'Date', title: 'End date' }			
+		dateStart:		{ type: 'DateTime', title: 'Start date' }
+		dateEnd:		{ type: 'DateTime', title: 'End date' }			
 		priority:		{ type: 'Text', title: 'Priority' }
 		status:			{ type: 'Text', title: 'Status' }
 		tags:			{ type: 'List', itemType: 'Text', title: 'Tags'}
@@ -59,7 +60,23 @@ class Todo extends Backbone.Model
 	
 	toString: ->
 		return @get('task')	
-							
+	
+	agendadateStart: ->
+		return new Date(@get('dateStart')).toLocaleString()
+			
+	agendadateEnd: ->
+		return new Date(@get('dateEnd')).toLocaleString()
+	
+	agendaPriority: ->
+		return @get('priority')
+						
+	agendaStatus: ->
+		return @get('status')	
+	
+	agendaTags: ->
+		return @get('tags')	
+
+				
 class Todos extends Backbone.PageableCollection
 	model:	Todo
 
