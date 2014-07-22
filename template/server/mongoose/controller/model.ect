@@ -40,7 +40,7 @@ class <%- Model %>
 			model.<%- Model %>.count {}, (err, count) ->
 				if err
 					return error res, err
-				res.json [{count: count}, <%- model %> ]
+				res.json {count: count, results: <%- model %>s}
 			
 	@create: (req, res) ->
 		data = req.body
