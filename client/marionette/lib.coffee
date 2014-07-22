@@ -93,12 +93,21 @@ class ModelView extends Marionette.ItemView
 			else if obj instanceof Backbone.Model			# Model
 				view = obj.pick obj.showFields()			# show attributes only if defined in model.showFields()
 				_.each view, (value, key, list) ->
-					ret += """
-						<div class='field'>
-							<label class='key'>#{obj.schema[key].title}</label>
-							#{ModelView.show value}
-						</div>
-					"""
+					if obj.schema[key].type == "DateTime"
+						datetime = obj.toLocaleString()
+						ret += """
+							<div class='field'>
+								<label class='key'>#{obj.schema[key].title}</label>
+								#{ModelView.show new Date(value).toLocaleString()}
+							</div>
+						"""
+					else
+						ret += """
+							<div class='field'>
+								<label class='key'>#{obj.schema[key].title}</label>
+								#{ModelView.show value}
+							</div>
+						"""
 					
 			else if _.isArray obj
 				_.each obj, (value) ->
